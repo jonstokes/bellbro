@@ -3,12 +3,12 @@ require 'sidekiq/testing'
 Sidekiq::Testing.fake!
 
 class TrackWorker < Bellbro::Worker
-  LOG_RECORD_SCHEMA = {
+  track_with_schema(
     links_created:    Integer,
     listings_updated: Integer,
     errors:           Array,
     status:           String
-  }
+  )
 
   def initialize(domain)
     @domain = domain
