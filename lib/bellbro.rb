@@ -4,6 +4,8 @@ require 'active_support/all'
 require 'redis'
 require 'yaml'
 require 'digest'
+require 'sidekiq'
+require 'airbrake'
 
 module Bellbro
   def self.logger

@@ -1,6 +1,7 @@
 module Bellbro
   class Worker < Bellbro::Bell
     include Sidekiq::Worker
+    include Bellbro::Trackable
     extend Bellbro::SidekiqUtils
 
     attr_reader :domain

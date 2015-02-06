@@ -3,8 +3,6 @@ require 'sidekiq/testing'
 Sidekiq::Testing.fake!
 
 class TrackWorker < Bellbro::Worker
-  include Bellbro::Trackable
-
   LOG_RECORD_SCHEMA = {
     links_created:    Integer,
     listings_updated: Integer,
@@ -12,24 +10,30 @@ class TrackWorker < Bellbro::Worker
     status:           String
   }
 
+  def initialize(domain)
+    @domain = domain
+  end
+
   def jid
     "abc123"
   end
 end
 
-describe Trackable do
+describe Bellbro::Trackable do
   before :each do
-    @worker = TrackWorker.new
+    @worker = TrackWorker.new('www.retailer.com')
     Sidekiq::Worker.clear_all
   end
 
   describe "#track" do
     it "should properly initialize the log record" do
       @worker.track
+      expect(@worker.record[:host]).to eq(Socket.gethostname)
+      expect(@worker.record[:agent][:name]).to eq('TrackWorker')
+      expect(@worker.record[:agent][:jid]).to eq('abc123')
       expect(@worker.record[:data][:links_created]).to eq(0)
       expect(@worker.record[:data][:listings_updated]).to eq(0)
       expect(@worker.record[:data][:errors]).to be_empty
-      expect(@worker.record[:jid]).to eq("abc123")
     end
   end
 
@@ -53,7 +57,7 @@ describe Trackable do
     it "writes to the standard logger to update status" do
       @worker.track(write_interval: 1)
       @worker.record_incr(:links_created)
-      expect(@worker).to receive(:ring)
+      expect(@worker).to receive(:write_log)
       @worker.status_update
     end
 

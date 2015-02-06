@@ -1,6 +1,7 @@
 module Bellbro
   module Trackable
     include Bellbro::Retryable
+
     attr_reader :record
 
     def track(opts={})
@@ -16,7 +17,11 @@ module Bellbro
 
     def status_update(force = false)
       return unless force || ((@count += 1) % @write_interval) == 0
-      retryable { $log.info(@record.to_json) }
+      retryable { write_log(@record.to_json) }
+    end
+
+    def write_log(line)
+      Bellbro.logger.info line
     end
 
     def record_set(attr, value)
@@ -50,7 +55,7 @@ module Bellbro
           agent: {
               name:   "#{self.class.name}",
               thread: "#{Thread.current.object_id}",
-              jid:    self.jid,
+              jid:    jid,
           },
           domain: @site.try(:domain) || @domain,
           complete: false,
