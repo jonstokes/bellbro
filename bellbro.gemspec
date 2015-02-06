@@ -9,7 +9,6 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Jon Stokes"]
   spec.email         = ["jon@jonstokes.com"]
   spec.summary       = %q{Helps with sidekiq.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
   spec.homepage      = ""
   spec.license       = "MIT"
 
