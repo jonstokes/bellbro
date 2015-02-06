@@ -1,5 +1,7 @@
 require "bellbro/version"
 
 module Bellbro
-  # Your code goes here...
+  def self.logger
+    Bellbro::Settings.logger
+  end
 end
