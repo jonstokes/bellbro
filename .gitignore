@@ -11,7 +11,7 @@
 *.so
 *.o
 *.a
-mkmf.log
+*.log
 *.gem
 /.idea/
 .rspec
