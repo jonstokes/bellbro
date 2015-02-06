@@ -7,12 +7,6 @@ require 'digest'
 require 'sidekiq'
 require 'airbrake'
 
-module Bellbro
-  def self.logger
-    Bellbro::Settings.logger
-  end
-end
-
 %w(
     bellbro/settings.rb
     bellbro/retryable.rb
@@ -25,4 +19,10 @@ end
     bellbro/worker.rb
 ).each do |path|
   require File.join(File.dirname(__FILE__),path)
+end
+
+module Bellbro
+  def self.logger
+    Bellbro::Settings.logger
+  end
 end
