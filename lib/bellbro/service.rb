@@ -20,8 +20,8 @@ module Bellbro
         begin
           run
         rescue Exception => @thread_error
-          notify "#{@thread_error.inspect}", type: :error
-          Airbrake.notify(@thread_error)
+          ring "#{@thread_error.inspect}", type: :error
+          Airbrake.ring(@thread_error)
           raise @thread_error
         end
       end
@@ -29,13 +29,13 @@ module Bellbro
 
     def stop
       @done = true
-      notify "Stopping #{self.class} service..."
+      ring "Stopping #{self.class} service..."
       @thread.join
-      notify "#{self.class.to_s.capitalize} service stopped."
+      ring "#{self.class.to_s.capitalize} service stopped."
     end
 
     def run
-      notify "Starting #{self.class} service."
+      ring "Starting #{self.class} service."
       Service.mutex.synchronize { track }
       begin
         start_jobs
@@ -49,7 +49,7 @@ module Bellbro
       each_job do |job|
         klass = job[:klass].constantize
         jid = klass.perform_async(job[:arguments])
-        notify "Starting job #{jid} #{job[:klass]} with #{job[:arguments]}."
+        ring "Starting job #{jid} #{job[:klass]} with #{job[:arguments]}."
         record_incr(:jobs_started)
       end
     end

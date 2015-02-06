@@ -1,7 +1,7 @@
 module Bellbro
   class Bell
     include Bellbro::Retryable
-    include Bellbro::Notifier
+    include Bellbro::Ringer
   end
 end
 
