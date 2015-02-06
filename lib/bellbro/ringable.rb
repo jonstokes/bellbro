@@ -1,5 +1,5 @@
 module Bellbro
-  module Ringer
+  module Ringable
     def self.included(klass)
       klass.extend(self)
     end

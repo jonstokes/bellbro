@@ -1,7 +1,7 @@
 module Bellbro
   class Bell
     include Bellbro::Retryable
-    include Bellbro::Ringer
+    include Bellbro::Ringable
   end
 end
 
