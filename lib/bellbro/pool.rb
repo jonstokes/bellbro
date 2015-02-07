@@ -4,22 +4,20 @@ module Bellbro
       klass.extend(self)
 
       class << klass
-        def pool(conn_pool)
-          self.class_eval do
-            @connection_pool = conn_pool
-          end
+        def pool(pool_name)
+          @pool_name = pool_name
         end
       end
     end
 
-    def with_connection(&block)
+    def with_connection(pool_name: nil, &block)
       retryable(sleep: 0.5) do
-        connection_pool.with &block
+        connection_pool(pool_name: pool_name).with &block
       end
     end
 
-    def connection_pool
-      @connection_pool
+    def connection_pool(pool_name: nil)
+      Bellbro::Settings.connection_pools[pool_name || @pool_name]
     end
   end
 
