@@ -21,7 +21,7 @@ module Bellbro
           run
         rescue Exception => @thread_error
           ring "#{@thread_error.inspect}", type: :error
-          Airbrake.ring(@thread_error)
+          Airbrake.notify(@thread_error)
           raise @thread_error
         end
       end
