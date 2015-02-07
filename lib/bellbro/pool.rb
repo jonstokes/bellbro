@@ -16,7 +16,7 @@ module Bellbro
 
       class << klass
         def pool(pool_name)
-          @pool_name = pool_name
+            @pool_name = pool_name
         end
 
         def connection_pool(pool_name: nil)

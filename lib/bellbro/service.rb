@@ -6,7 +6,7 @@ module Bellbro
     include Bellbro::Trackable
 
     SLEEP_INTERVAL = defined?(Rails) && Rails.env.test? ? 1 : 3600
-    LOG_RECORD_SCHEMA = { jobs_started: Integer }
+    track_with_schema jobs_started: Integer
 
     attr_reader :thread, :thread_error, :jid
 
