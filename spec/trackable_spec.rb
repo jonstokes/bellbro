@@ -10,10 +10,6 @@ class TrackWorker < Bellbro::Worker
     status:           String
   )
 
-  def initialize(domain)
-    @domain = domain
-  end
-
   def jid
     "abc123"
   end
@@ -21,7 +17,7 @@ end
 
 describe Bellbro::Trackable do
   before :each do
-    @worker = TrackWorker.new('www.retailer.com')
+    @worker = TrackWorker.new
     Sidekiq::Worker.clear_all
   end
 

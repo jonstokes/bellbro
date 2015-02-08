@@ -1,6 +1,44 @@
 module Bellbro
   module SidekiqUtils
 
+    def _workers
+      retryable(on: Redis::TimeoutError) do
+        workers_for_class("#{self.name}")
+      end
+    end
+
+    def _jobs
+      retryable(on: Redis::TimeoutError) do
+        jobs_for_class("#{self.name}")
+      end
+    end
+
+    def active_workers
+      _workers.map do |w|
+        {
+            :domain => worker_domain(w),
+            :jid => worker_jid(w),
+            :time => worker_time(w)
+        }
+      end
+    end
+
+    def queued_jobs
+      _jobs.map { |j| {:domain => job_domain(j), :jid => job_jid(j)} }
+    end
+
+    def workers_with_domain(domain)
+      active_workers.select { |w| w[:domain] == domain }
+    end
+
+    def jobs_with_domain(domain)
+      queued_jobs.select { |j| j[:domain] == domain }
+    end
+
+    def jobs_in_flight_with_domain(domain)
+      jobs_with_domain(domain) + workers_with_domain(domain)
+    end
+
     def workers
       Sidekiq::Workers.new.map do |process_id, thread_id, worker|
         worker

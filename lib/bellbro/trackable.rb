@@ -25,11 +25,12 @@ module Bellbro
       @write_interval = opts[:write_interval] || 500
       @count = 0
       @tracking = true
-      initialize_log_record
+      initialize_log_record if @log_record_schema
       status_update(true)
     end
 
     def status_update(force = false)
+      return unless @log_record_schema && Bellbro.logger
       return unless force || ((@count += 1) % @write_interval) == 0
       retryable { write_log(@record.to_json) }
     end
