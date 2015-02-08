@@ -5,10 +5,14 @@ module Bellbro
     include Bellbro::SidekiqUtils
     include Bellbro::Trackable
 
-    SLEEP_INTERVAL = defined?(Rails) && Rails.env.test? ? 1 : 3600
-    track_with_schema jobs_started: Integer
-
     attr_reader :thread, :thread_error, :jid
+
+    def self.poll_interval(arg)
+      @sleep_interval = arg
+    end
+
+    poll_interval defined?(Rails) && Rails.env.test? ? 1 : 3600
+    track_with_schema jobs_started: Integer
 
     def initialize
       @done = false
@@ -40,7 +44,7 @@ module Bellbro
       begin
         start_jobs
         Service.mutex.synchronize { status_update }
-        sleep self.class::SLEEP_INTERVAL
+        sleep
       end until @done
       Service.mutex.synchronize { stop_tracking }
     end
@@ -52,6 +56,10 @@ module Bellbro
         ring "Starting job #{jid} #{job[:klass]} with #{job[:arguments]}."
         record_incr(:jobs_started)
       end
+    end
+
+    def sleep
+      super(self.class.sleep_interval)
     end
 
     def each_job
@@ -66,6 +74,11 @@ module Bellbro
     def self.mutex
       $mutex ||= Mutex.new
     end
+
+    def self.sleep_interval
+      @sleep_interval
+    end
+
   end
 
 end
