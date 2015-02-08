@@ -4,17 +4,19 @@ module Bellbro
 
     attr_reader :record
 
-    def self.included(klass)
-      class << klass
-        def track_with_schema(hash)
-          self.class_eval do
-            @log_record_schema = hash
-          end
-        end
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+      end
+    end
 
-        def log_record_schema
-          @log_record_schema
-        end
+    module ClassMethods
+      def track_with_schema(hash)
+        @log_record_schema = hash
+      end
+
+      def log_record_schema
+        @log_record_schema
       end
     end
 
