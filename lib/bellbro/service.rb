@@ -8,7 +8,11 @@ module Bellbro
     attr_reader :thread, :thread_error, :jid
 
     def self.poll_interval(arg)
-      @sleep_interval = arg
+      if defined?(Rails) && Rails.env.test?
+        @sleep_interval = 0.5
+      else
+        @sleep_interval = arg
+      end
     end
 
     poll_interval defined?(Rails) && Rails.env.test? ? 1 : 3600
