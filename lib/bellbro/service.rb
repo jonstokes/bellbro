@@ -15,6 +15,14 @@ module Bellbro
       end
     end
 
+    def self.worker_class(arg)
+      @worker_class = arg
+    end
+
+    def self.get_worker_class
+      @worker_class
+    end
+
     poll_interval defined?(Rails) && Rails.env.test? ? 1 : 3600
     track_with_schema jobs_started: Integer
 
@@ -55,9 +63,8 @@ module Bellbro
 
     def start_jobs
       each_job do |job|
-        klass = job[:klass].constantize
-        jid = klass.perform_async(job[:arguments])
-        ring "Starting job #{jid} #{job[:klass]} with #{job[:arguments]}."
+        jid = worker_class.perform_async(job)
+        ring "Starting job #{jid} #{worker_class.name} with #{job.inspect}."
         record_incr(:jobs_started)
       end
     end
@@ -73,6 +80,10 @@ module Bellbro
 
     def running?
       !@done
+    end
+
+    def worker_class
+      @worker_class ||= self.class.get_worker_class
     end
 
     def self.mutex

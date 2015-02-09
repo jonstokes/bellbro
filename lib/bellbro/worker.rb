@@ -25,6 +25,10 @@ module Bellbro
       self.class.should_run?
     end
 
+    def debug?
+      @debug ||= !!context[:debug] rescue false
+    end
+
     def self.should_run?
       # override
       true
