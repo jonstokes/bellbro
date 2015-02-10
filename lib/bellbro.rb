@@ -10,6 +10,7 @@ require 'airbrake'
 %w(
     bellbro/settings.rb
     bellbro/hooks.rb
+    bellbro/keyable.rb
     bellbro/retryable.rb
     bellbro/ringable.rb
     bellbro/trackable.rb
