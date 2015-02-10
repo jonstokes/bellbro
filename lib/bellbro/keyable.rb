@@ -59,23 +59,12 @@ module Bellbro
         # Set up the data hash, if needed
         if respond_to?(to) && !send(to).respond_to?(:[]) && !send(to).respond_to?(:[]=)
           raise ArgumentError, 'Target must be a hash-like object.'
-        else
-          file, line = caller.first.split(':', 2)
-          line = line.to_i
-          method_def = "def #{to}; @#{to} ||= {}; end"
-          module_eval method_def, file, line
         end
 
-        @respond_to ||= [to]
+        @respond_to ||= []
         { methods: methods.map(&:to_sym), to: to }
       end
 
     end
   end
-end
-
-class DelTest
-  include Bellbro::Keyable
-  delegate_all_keys :a, :b, :c, to: :data
-
 end
