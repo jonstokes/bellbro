@@ -18,6 +18,10 @@ module Bellbro
         def pool(pool_name)
             @pool_name = pool_name
         end
+        
+        def pool_name
+          @pool_name
+        end
 
         def connection_pool(pool_name: nil)
           Bellbro::Settings.connection_pools[pool_name || @pool_name]
