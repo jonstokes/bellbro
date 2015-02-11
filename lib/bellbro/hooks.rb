@@ -5,6 +5,14 @@ module Bellbro
       base.class_eval do
         extend ClassMethods
       end
+
+      def aborted?
+        !!@abort
+      end
+
+      def abort!
+        @abort = true
+      end
     end
 
     module ClassMethods
@@ -125,6 +133,11 @@ module Bellbro
         hooks.each { |hook| after_hooks.unshift(hook) }
       end
 
+      def always(*hooks, &block)
+        hooks << block if block
+        hooks.each { |hook| always_hooks.unshift(hook) }
+      end
+
       # Internal: An Array of declared hooks to run around Worker
       # invocation. The hooks appear in the order in which they will be run.
       #
@@ -181,6 +194,11 @@ module Bellbro
       def after_hooks
         @after_hooks ||= []
       end
+
+      def always_hooks
+        @always_hooks ||= []
+      end
+
     end
 
     private
@@ -236,14 +254,21 @@ module Bellbro
       run_hooks(self.class.after_hooks)
     end
 
+    def run_always_hooks
+      run_hooks(self.class.always_hooks, halt_on_abort: false)
+    end
+
     # Internal: Run a colection of hooks. The "run_hooks" method is the common
     # interface by which collections of either before or after hooks are run.
     #
     # hooks - An Array of Symbol and Proc hooks.
     #
     # Returns nothing.
-    def run_hooks(hooks)
-      hooks.each { |hook| run_hook(hook) }
+    def run_hooks(hooks, halt_on_abort: true)
+      hooks.each do |hook|
+        run_hook(hook)
+        break if aborted? && halt_on_abort
+      end
     end
 
     # Internal: Run an individual hook. The "run_hook" method is the common

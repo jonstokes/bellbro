@@ -7,13 +7,18 @@ module Bellbro
 
     attr_reader :context
 
+    before :should_run?
+
     def perform(args)
       return unless args.present?
       set_context(args)
       run_before_hooks
-      return unless should_run?
+      return if aborted?
       call
+      return if aborted?
       run_after_hooks
+    ensure
+      run_always_hooks
     end
 
     def call
@@ -21,8 +26,7 @@ module Bellbro
     end
 
     def should_run?
-      # override
-      self.class.should_run?
+      abort! unless self.class.should_run?
     end
 
     def debug?
