@@ -11,7 +11,7 @@ module Bellbro
       end
 
       def abort!
-        @abort = true
+        !(@abort = true)
       end
     end
 

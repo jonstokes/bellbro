@@ -26,7 +26,7 @@ module Bellbro
     end
 
     def should_run?
-      abort! unless self.class.should_run?
+      self.class.should_run? || abort!
     end
 
     def debug?
