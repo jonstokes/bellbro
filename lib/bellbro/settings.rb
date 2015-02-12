@@ -2,7 +2,7 @@ module Bellbro
   module Settings
 
     class SettingsData < Struct.new(
-        :logger, :env, :connection_pools
+        :logger, :env, :connection_pool, :db_directory
     )
     end
 
@@ -24,9 +24,14 @@ module Bellbro
       configuration.env == 'test'
     end
 
-    def self.connection_pools
+    def self.connection_pool
       return unless configured?
-      configuration.connection_pools
+      configuration.connection_pool
+    end
+
+    def self.db_directory
+      return unless configured?
+      configuration.db_directory
     end
 
     def self.logger

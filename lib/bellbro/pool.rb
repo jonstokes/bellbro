@@ -1,30 +1,35 @@
 module Bellbro
   module Pool
 
-    def with_connection(pool_name: nil, &block)
+    def with_connection(key: nil)
+      key ||= db_name
+      db = directory(key)
       retryable(sleep: 0.5) do
-        connection_pool(pool_name: pool_name).with &block
+        Bellbro::Settings.connection_pool.with do |c|
+          c.select(db)
+          yield c
+        end
       end
     end
 
-    def connection_pool(pool_name: nil)
-      self.class.connection_pool(pool_name: pool_name)
+    def db_name
+      self.class.db_name
+    end
+
+    def directory(name)
+      Bellbro::Settings.db_directory[name]
     end
 
     def self.included(klass)
       klass.extend(self)
 
       class << klass
-        def pool(pool_name)
-            @pool_name = pool_name
+        def set_db(db_name)
+          @db_name = db_name
         end
         
-        def pool_name
-          @pool_name
-        end
-
-        def connection_pool(pool_name: nil)
-          Bellbro::Settings.connection_pools[pool_name || @pool_name]
+        def db_name
+          @db_name
         end
       end
     end

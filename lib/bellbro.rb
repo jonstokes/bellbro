@@ -19,6 +19,7 @@ require 'airbrake'
     bellbro/bell.rb
     bellbro/service.rb
     bellbro/worker.rb
+    bellbro/initialize.rb
 ).each do |path|
   require File.join(File.dirname(__FILE__),path)
 end
