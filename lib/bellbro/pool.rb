@@ -1,8 +1,9 @@
 module Bellbro
   module Pool
-
     def with_connection(key: nil)
-      self.class.with_connection(key)
+      self.class.with_connection(key: key) do |c|
+        yield c
+      end
     end
 
     def db_name
@@ -15,9 +16,11 @@ module Bellbro
           key ||= db_name
           db = directory(key)
           retryable(sleep: 0.5) do
-            Sidekiq.redis.with do |c|
+            Sidekiq.redis do |c|
               c.select(db)
-              yield c
+              retval = yield c
+              c.select(Bellbro::Settings.db_directory[:sidekiq])
+              retval
             end
           end
         end
