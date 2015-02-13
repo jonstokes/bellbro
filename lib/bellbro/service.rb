@@ -52,13 +52,13 @@ module Bellbro
 
     def run
       ring "Starting #{self.class} service."
-      Service.mutex.synchronize { track }
+      self.class.mutex.synchronize { track }
       begin
-        Service.mutex.synchronize { start_jobs }
-        Service.mutex.synchronize { status_update }
+        self.class.mutex.synchronize { start_jobs }
+        self.class.mutex.synchronize { status_update }
         sleep
       end until @done
-      Service.mutex.synchronize { stop_tracking }
+      self.class.mutex.synchronize { stop_tracking }
     end
 
     def start_jobs
