@@ -10,33 +10,29 @@ module Bellbro
     end
 
     def self.included(klass)
-      klass.extend(self)
-      klass.extend(ClassMethods)
-
-    end
-
-    def ClassMethods
-      def with_connection(key: nil)
-        key ||= db_name
-        db = directory(key)
-        retryable(sleep: 0.5) do
-          Sidekiq.redis.with do |c|
-            c.select(db)
-            yield c
+      class << klass
+        def with_connection(key: nil)
+          key ||= db_name
+          db = directory(key)
+          retryable(sleep: 0.5) do
+            Sidekiq.redis.with do |c|
+              c.select(db)
+              yield c
+            end
           end
         end
-      end
 
-      def directory(name)
-        Bellbro::Settings.db_directory[name]
-      end
+        def directory(name)
+          Bellbro::Settings.db_directory[name]
+        end
 
-      def set_db(db_name)
-        @db_name = db_name
-      end
+        def set_db(db_name)
+          @db_name = db_name
+        end
 
-      def db_name
-        @db_name
+        def db_name
+          @db_name
+        end
       end
 
     end
