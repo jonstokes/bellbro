@@ -15,21 +15,15 @@ module Bellbro
 
         def with_connection
           retryable(sleep: 0.5) do
-            Sidekiq.redis do |c|
+            Bellbro::Settings.redis_pool.with do |c|
               c.select(model_db)
-              val = yield c
-              c.select(sidekiq_db)
-              val
+              yield c
             end
           end
         end
 
         def model_db
           @model_db ||= Bellbro::Settings.redis_databases[@default_db_name]
-        end
-
-        def sidekiq_db
-          @sidekiq_db ||= Bellbro::Settings.redis_databases[:sidekiq]
         end
       end
 

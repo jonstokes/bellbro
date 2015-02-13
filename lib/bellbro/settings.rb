@@ -2,7 +2,7 @@ module Bellbro
   module Settings
 
     class SettingsData < Struct.new(
-        :logger, :env, :redis_databases, :redis_pool_size, :redis_url
+        :logger, :env, :redis_databases, :redis_pool_size, :redis_url, :redis_pool
     )
     end
 
@@ -22,6 +22,15 @@ module Bellbro
     def self.test?
       return unless configured?
       configuration.env == 'test'
+    end
+
+    def self.redis_pool
+      return unless configured?
+      configuration.redis_pool ||= begin
+         ConnectionPool.new(timeout: 5, size: redis_pool_size) do
+           Redis.new(url: redis_url, network_timeout: 5)
+         end
+      end
     end
 
     def self.redis_databases
