@@ -1,5 +1,5 @@
 module Bellbro
-  def self.initialize!
+  def self.initialize_redis!
     return unless defined?(Rails)
     filename = "#{Rails.root}/config/redis.yml"
     return unless File.exists?(filename)
@@ -8,7 +8,7 @@ module Bellbro
   end
 
   def self.configure_bellbro(config)
-    redis_url = config['redis_url']
+    redis_url = Figaro.env.redis_url
     databases = ThreadSafe::Cache.new
     config['databases'].each do |name, db|
       puts "## Db name #{name} mapped to #{db}"
