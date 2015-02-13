@@ -2,7 +2,7 @@ module Bellbro
   module Settings
 
     class SettingsData < Struct.new(
-        :logger, :env, :connection_pool, :db_directory
+        :logger, :env, :redis_databases, :redis_pool_size, :redis_url
     )
     end
 
@@ -24,14 +24,19 @@ module Bellbro
       configuration.env == 'test'
     end
 
-    def self.connection_pool
+    def self.redis_databases
       return unless configured?
-      configuration.connection_pool
+      configuration.redis_databases
     end
 
-    def self.db_directory
+    def self.redis_pool_size
       return unless configured?
-      configuration.db_directory
+      configuration.redis_pool_size
+    end
+
+    def self.redis_url
+      return unless configured?
+      configuration.redis_url
     end
 
     def self.logger

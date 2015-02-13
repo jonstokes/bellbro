@@ -14,7 +14,7 @@ require 'airbrake'
     bellbro/retryable.rb
     bellbro/ringable.rb
     bellbro/trackable.rb
-    bellbro/pool.rb
+    bellbro/redis_pool.rb
     bellbro/sidekiq_utils.rb
     bellbro/bell.rb
     bellbro/service.rb
