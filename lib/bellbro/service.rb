@@ -54,7 +54,7 @@ module Bellbro
       ring "Starting #{self.class} service."
       Service.mutex.synchronize { track }
       begin
-        start_jobs
+        Service.mutex.synchronize { start_jobs }
         Service.mutex.synchronize { status_update }
         sleep
       end until @done
