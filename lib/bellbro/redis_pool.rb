@@ -15,15 +15,14 @@ module Bellbro
 
         def with_connection
           retryable(sleep: 0.5) do
-            Bellbro::Settings.redis_pool.with do |c|
-              c.select(model_db)
+            model_pool.with do |c|
               yield c
             end
           end
         end
 
-        def model_db
-          @model_db ||= Bellbro::Settings.redis_databases[@default_db_name]
+        def model_pool
+          @model_pool ||= Bellbro::Settings.redis_pool[@default_db_name]
         end
       end
 
