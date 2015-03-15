@@ -2,7 +2,7 @@ module Bellbro
   module Settings
 
     class SettingsData < Struct.new(
-        :logger, :env, :redis_config, :redis_pool
+        :logger, :env
     )
     end
 
@@ -22,16 +22,6 @@ module Bellbro
     def self.test?
       return unless configured?
       configuration.env == 'test'
-    end
-
-    def self.redis_pool
-      return unless configured?
-      configuration.redis_pool
-    end
-
-    def self.redis_config
-      return unless configured?
-      configuration.redis_config
     end
 
     def self.logger

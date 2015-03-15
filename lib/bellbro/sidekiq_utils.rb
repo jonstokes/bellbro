@@ -1,14 +1,16 @@
+require 'retryable'
+
 module Bellbro
   module SidekiqUtils
 
     def _workers
-      retryable(on: Redis::TimeoutError) do
+      Retryable.retryable(on: Redis::TimeoutError) do
         workers_for_class("#{self.name}")
       end
     end
 
     def _jobs
-      retryable(on: Redis::TimeoutError) do
+      Retryable.retryable(on: Redis::TimeoutError) do
         jobs_for_class("#{self.name}")
       end
     end

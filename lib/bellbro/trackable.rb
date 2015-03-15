@@ -1,7 +1,5 @@
 module Bellbro
   module Trackable
-    include Bellbro::Retryable
-
     attr_reader :record
 
     def self.included(base)
@@ -34,7 +32,7 @@ module Bellbro
     def status_update(force = false)
       return unless @log_record_schema && Bellbro.logger
       return unless force || ((@count += 1) % @write_interval) == 0
-      retryable { write_log(@record.to_json) }
+      Retryable.retryable { write_log(@record.to_json) }
     end
 
     def write_log(line)
