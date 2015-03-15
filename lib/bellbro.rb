@@ -7,6 +7,7 @@ require 'digest'
 require 'sidekiq'
 require 'airbrake'
 require 'retryable'
+require 'shout'
 
 %w(
     bellbro/hooks.rb
@@ -16,10 +17,4 @@ require 'retryable'
     bellbro/worker.rb
 ).each do |path|
   require File.join(File.dirname(__FILE__),path)
-end
-
-module Bellbro
-  def self.logger
-    Bellbro::Settings.logger
-  end
 end
