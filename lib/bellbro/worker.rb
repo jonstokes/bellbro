@@ -1,5 +1,6 @@
 module Bellbro
-  class Worker < Bellbro::Bell
+  class Worker
+    include Shout
     include Sidekiq::Worker
     include Bellbro::Trackable
     include Bellbro::Hooks

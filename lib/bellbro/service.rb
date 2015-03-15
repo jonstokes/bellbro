@@ -1,9 +1,10 @@
 require 'digest'
 
 module Bellbro
-  class Service < Bellbro::Bell
+  class Service
     include Bellbro::SidekiqUtils
     include Bellbro::Trackable
+    include Shout
 
     attr_reader :thread, :thread_error, :jid
 
@@ -36,7 +37,7 @@ module Bellbro
         begin
           run
         rescue Exception => @thread_error
-          ring "#{@thread_error.inspect}", type: :error
+          log "#{@thread_error.inspect}", type: :error
           Airbrake.notify(@thread_error)
           raise @thread_error
         end
@@ -45,13 +46,13 @@ module Bellbro
 
     def stop
       @done = true
-      ring "Stopping #{self.class} service..."
+      log "Stopping #{self.class} service..."
       @thread.join
-      ring "#{self.class.to_s.capitalize} service stopped."
+      log "#{self.class.to_s.capitalize} service stopped."
     end
 
     def run
-      ring "Starting #{self.class} service."
+      log "Starting #{self.class} service."
       self.class.mutex.synchronize { track }
       begin
         self.class.mutex.synchronize { start_jobs }
@@ -64,7 +65,7 @@ module Bellbro
     def start_jobs
       each_job do |job|
         jid = worker_class.perform_async(job)
-        ring "Starting job #{jid} #{worker_class.name} with #{job.inspect}."
+        log "Starting job #{jid} #{worker_class.name} with #{job.inspect}."
         record_incr(:jobs_started)
       end
     end

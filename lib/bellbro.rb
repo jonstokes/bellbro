@@ -11,10 +11,8 @@ require 'retryable'
 %w(
     bellbro/settings.rb
     bellbro/hooks.rb
-    bellbro/ringable.rb
     bellbro/trackable.rb
     bellbro/sidekiq_utils.rb
-    bellbro/bell.rb
     bellbro/service.rb
     bellbro/worker.rb
 ).each do |path|
