@@ -9,7 +9,6 @@ require 'airbrake'
 require 'retryable'
 
 %w(
-    bellbro/settings.rb
     bellbro/hooks.rb
     bellbro/trackable.rb
     bellbro/sidekiq_utils.rb
