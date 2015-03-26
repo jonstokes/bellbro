@@ -94,7 +94,7 @@ module Bellbro
     def validate(attrs)
       attrs.each do |attr, value|
         raise "Invalid attribute #{attr}" unless log_record_attributes.include?(attr)
-        raise "Invalid type for #{attr}" unless [value.class, value.class.superclass].include?(@log_record_schema[attr])
+        raise "Invalid type for #{attr}, value is #{value}[#{value.class}]" unless [value.class, value.class.superclass].include?(@log_record_schema[attr])
       end
     end
 
