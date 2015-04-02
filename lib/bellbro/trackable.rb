@@ -39,6 +39,13 @@ module Bellbro
       Shout.logger.info line
     end
 
+    def record_update(attrs)
+      attrs.symbolize_keys!
+      attrs.each do |attr, value|
+        record_set(attr, value)
+      end
+    end
+
     def record_set(attr, value)
       attr = attr.to_sym
       validate(attr => value)
