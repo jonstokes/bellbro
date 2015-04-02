@@ -45,10 +45,14 @@ module Bellbro
       @record[:data][attr] = value
     end
 
-    def record_incr(attr)
+    def record_add(attr, num)
       attr = attr.to_sym
-      validate(attr => 1)
-      @record[:data][attr] += 1
+      validate(attr => num)
+      @record[:data][attr] += num
+    end
+
+    def record_incr(attr)
+      record_add(attr, 1)
     end
 
     def stop_tracking
