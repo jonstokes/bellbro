@@ -32,7 +32,8 @@ module Bellbro
     def status_update(force = false)
       return unless @log_record_schema && Shout.logger
       return unless force || ((@count += 1) % @write_interval) == 0
-      Retryable.retryable { write_log(@record.to_json) }
+      line = Rails.env.test? ? JSON.pretty_generate(@record) : @record.to_json
+      Retryable.retryable { write_log(line) }
     end
 
     def write_log(line)
@@ -67,6 +68,7 @@ module Bellbro
       @record[:stopped] = Time.now.utc.iso8601
       @tracking = false
       status_update(true)
+      @record = nil
     end
 
     def tracking?
