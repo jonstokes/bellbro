@@ -130,7 +130,7 @@ module Bellbro
       # Returns nothing.
       def after(*hooks, &block)
         hooks << block if block
-        hooks.each { |hook| after_hooks.unshift(hook) }
+        hooks.each { |hook| after_hooks.push(hook) }
       end
 
       def always(*hooks, &block)
