@@ -1,7 +1,7 @@
 module Bellbro
   class Worker
-    include Shout
     include Sidekiq::Worker
+    include Bellbro::Ringable
     include Bellbro::Trackable
     include Bellbro::Hooks
     extend Bellbro::SidekiqUtils

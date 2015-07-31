@@ -11,7 +11,15 @@ module Bellbro
       end
 
       def abort!
-        !(@abort = true)
+        @abort = true
+      end
+
+      def timer
+        @timer ||= Bellbro::Timer.new(self.class.time_out_interval)
+      end
+
+      def timed_out?
+        timer.timed_out?
       end
     end
 
@@ -57,6 +65,14 @@ module Bellbro
       def around(*hooks, &block)
         hooks << block if block
         hooks.each { |hook| around_hooks.push(hook) }
+      end
+
+      def time_out_in(interval)
+        @time_out_interval = interval
+      end
+
+      def time_out_interval
+        @time_out_interval
       end
 
       # Public: Declare hooks to run before Worker invocation. The before

@@ -4,7 +4,7 @@ module Bellbro
   class Service
     include Bellbro::SidekiqUtils
     include Bellbro::Trackable
-    include Shout
+    include Bellbro::Ringable
 
     attr_reader :thread, :thread_error, :jid
 

@@ -30,14 +30,14 @@ module Bellbro
     end
 
     def status_update(force = false)
-      return unless @log_record_schema && Shout.logger
+      return unless @log_record_schema && Bellbro::Settings.logger
       return unless force || ((@count += 1) % @write_interval) == 0
       line = Rails.env.test? ? JSON.pretty_generate(@record) : @record.to_json
       Retryable.retryable { write_log(line) }
     end
 
     def write_log(line)
-      Shout.logger.info line
+      ring line
     end
 
     def record_update(attrs)
