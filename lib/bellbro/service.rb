@@ -36,23 +36,23 @@ module Bellbro
       @thread = Thread.new do
         begin
           run
-        rescue Exception => @thread_error
-          log "#{@thread_error.inspect}", type: :error
-          Airbrake.notify(@thread_error)
-          raise @thread_error
+        #rescue Exception => @thread_error
+        #  Rails.logger.info "#{@thread_error.inspect}", type: :error
+        #  Airbrake.notify(@thread_error)
+        #  raise @thread_error
         end
       end
     end
 
     def stop
       @done = true
-      log "Stopping #{self.class} service..."
+      Rails.logger.info "Stopping #{self.class} service..."
       @thread.join
-      log "#{self.class.to_s.capitalize} service stopped."
+      Rails.logger.info "#{self.class.to_s.capitalize} service stopped."
     end
 
     def run
-      log "Starting #{self.class} service."
+      Rails.logger.info "Starting #{self.class} service."
       self.class.mutex.synchronize { track }
       begin
         self.class.mutex.synchronize { start_jobs }
@@ -65,7 +65,7 @@ module Bellbro
     def start_jobs
       each_job do |job|
         jid = worker_class.perform_async(job)
-        log "Starting job #{jid} #{worker_class.name} with #{job.inspect}."
+        Rails.logger.info "Starting job #{jid} #{worker_class.name} with #{job.inspect}."
         record_incr(:jobs_started)
       end
     end

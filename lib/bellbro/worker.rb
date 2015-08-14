@@ -4,7 +4,7 @@ module Bellbro
     include Bellbro::Ringable
     include Bellbro::Trackable
     include Bellbro::Hooks
-    extend Bellbro::SidekiqUtils
+    extend  Bellbro::SidekiqUtils
 
     attr_reader :context
 
